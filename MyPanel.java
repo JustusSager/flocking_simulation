@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.StrokeBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -13,10 +15,10 @@ public class MyPanel extends JPanel implements ActionListener{
     
     MyPanel() {
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        this.setBackground(Color.WHITE);
+        this.setBackground(Color.DARK_GRAY);
 
         for (int i = 0; i < boids.length; i++) {
-            boids[i] = new Boid(new Vector2D(PANEL_WIDTH / 2, PANEL_HEIGHT / 2), Vector2D.random(2, 2), new Vector2D());
+            boids[i] = new Boid(Vector2D.random(0, 500), Vector2D.random(2, 2), new Vector2D());
             boids[i].velocity = boids[i].velocity.normalize();
         }
 
@@ -32,6 +34,9 @@ public class MyPanel extends JPanel implements ActionListener{
         super.paint(g);
 
         for (Boid boid : boids) {
+            g2d.setColor(Color.WHITE);
+            g2d.fillOval((int) boid.position.x - 10, (int) boid.position.y - 10, 20, 20);
+            g2d.setColor(Color.BLACK);
             g2d.drawOval((int) boid.position.x - 10, (int) boid.position.y - 10, 20, 20);
         }
 
@@ -39,31 +44,28 @@ public class MyPanel extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        // for (Boid boid : boids) {
-        //     for (Boid other_boid : boids) {
-        //         if (boid == other_boid) {
-        //             continue;
-        //         }
-        //         if (boid.vector_to_other(other_boid).length() < 200) {
-        //             boid.velocity = boid.velocity.add(other_boid.velocity).normalize();
-        //         }
-                
-        //     }
-        // }
+
+        for (Boid boid : boids) {
+
+            // Vector2D average_heading = boid.alignment(boids);
+            
+
+            // boid.velocity = average_heading;
+            
+        }
         
         for (Boid boid : boids) {
             boid.update();
     
             if (boid.position.x < 0) {
-                boid.velocity.x *= -1;
+                boid.position.x = PANEL_WIDTH;
             } else if (boid.position.x > PANEL_WIDTH) {
-                boid.velocity.x *= -1;
+                boid.position.x = 0;
             }
             if (boid.position.y < 0) {
-                boid.velocity.y *= -1;
+                boid.position.y = PANEL_HEIGHT;
             } else if (boid.position.y > PANEL_HEIGHT) {
-                boid.velocity.y *= -1;
+                boid.position.y = 0;
             }
         }
         repaint();

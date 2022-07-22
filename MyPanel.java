@@ -11,7 +11,7 @@ public class MyPanel extends JPanel implements ActionListener{
 
     Timer timer;
     
-    Boid[] boids = new Boid[200];
+    Boid[] boids = new Boid[50];
     
     MyPanel() {
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
@@ -19,6 +19,7 @@ public class MyPanel extends JPanel implements ActionListener{
 
         for (int i = 0; i < boids.length; i++) {
             boids[i] = new Boid(Vector2D.random(0, 500), Vector2D.random(2, 2), new Vector2D());
+            // boids[i] = new Boid(new Vector2D(PANEL_WIDTH/2, PANEL_HEIGHT/2), Vector2D.random(2, 2), new Vector2D());
             boids[i].velocity = boids[i].velocity.normalize();
         }
 
@@ -35,25 +36,13 @@ public class MyPanel extends JPanel implements ActionListener{
 
         for (Boid boid : boids) {
             g2d.setColor(Color.WHITE);
-            g2d.fillOval((int) boid.position.x - 10, (int) boid.position.y - 10, 20, 20);
-            g2d.setColor(Color.BLACK);
-            g2d.drawOval((int) boid.position.x - 10, (int) boid.position.y - 10, 20, 20);
+            g2d.fillOval((int) boid.position.x - 5, (int) boid.position.y - 5, 10, 10);
         }
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        for (Boid boid : boids) {
-
-            // Vector2D average_heading = boid.alignment(boids);
-            
-
-            // boid.velocity = average_heading;
-            
-        }
-        
         for (Boid boid : boids) {
             boid.update();
     
@@ -68,6 +57,14 @@ public class MyPanel extends JPanel implements ActionListener{
                 boid.position.y = 0;
             }
         }
+
+        for (Boid boid : boids) {
+
+            Vector2D alignment = boid.alignment(boids);
+            
+            boid.acceleration = alignment;
+        }
+        
         repaint();
     }
 }

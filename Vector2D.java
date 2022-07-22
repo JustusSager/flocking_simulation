@@ -26,25 +26,12 @@ public class Vector2D {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
-    static Vector2D add(Vector2D... others) {
-        Vector2D result = new Vector2D();
-        for (Vector2D other : others) {
-            result.x = result.x + other.x;
-            result.y = result.y + other.y;
-        }
-        return result;
+    Vector2D add(Vector2D other) {
+        return new Vector2D(this.x + other.x, this.y + other.y);
     }
 
-    static Vector2D sub(Vector2D... others) {
-        if (others.length < 2) {
-            return others[0];
-        }
-        Vector2D result = new Vector2D();
-        for (Vector2D other : others) {
-            result.x = result.x - other.x;
-            result.y = result.y - other.y;
-        }
-        return result;
+    Vector2D sub(Vector2D other) {
+        return new Vector2D(this.x - other.x, this.y - other.y);
     }
 
     Vector2D mult(double a) {

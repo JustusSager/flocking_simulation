@@ -10,7 +10,7 @@ public class MyPanel extends JPanel implements ActionListener{
 
     Timer timer;
     
-    Boid[] boids = new Boid[100];
+    Boid[] boids = new Boid[50];
     
     MyPanel() {
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
@@ -45,8 +45,9 @@ public class MyPanel extends JPanel implements ActionListener{
 
         for (Boid boid : boids) {
             boid.flock(boids);
+            // System.out.println(boid);
         }
-        
+
         for (Boid boid : boids) {
             boid.update();
     

@@ -18,7 +18,11 @@ public class Boid {
                 boids_in_view++;
                 Vector2D v = new Vector2D();
                 v = this.position.sub(other_boid.position);
-                v = v.div(v.length());
+                if (v.length() != 0) {
+                    v = v.div(v.length());
+                } else {
+                    v = new Vector2D();
+                }
 
                 result = result.add(v);
             }
@@ -72,9 +76,8 @@ public class Boid {
     }
 
     void flock(Boid[] boids){
-        this.acceleration = new Vector2D();
-        Vector2D seperation = this.seperation(boids, 0.0);
-        Vector2D alignment = this.alignment(boids, 0.2);
+        Vector2D seperation = this.seperation(boids, 0.5);
+        Vector2D alignment = this.alignment(boids, 0.1);
         Vector2D cohesion = this.cohesion(boids, 0.2);
         
         this.acceleration = Vector2D.add(seperation, alignment, cohesion);

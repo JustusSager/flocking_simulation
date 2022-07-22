@@ -19,7 +19,10 @@ public class Vector2D {
     }
 
     Vector2D normalize() {
-        return new Vector2D(this.div(this.length()));
+        if (this.length() != 0) {
+            return new Vector2D(this.div(this.length()));
+        }
+        return new Vector2D();
     }
 
     double length() {

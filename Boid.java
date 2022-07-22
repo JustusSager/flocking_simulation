@@ -1,7 +1,7 @@
 public class Boid {
 
     Vector2D position, velocity, acceleration;
-    final int view_distance = 50;
+    final int view_distance = 100;
 
     Boid(Vector2D position, Vector2D velocity, Vector2D acceleration) {
         this.position = position;
@@ -9,15 +9,33 @@ public class Boid {
         this.acceleration = acceleration;
     }
 
-    Vector2D seperation(Boid[] boids) {
+    Vector2D seperation(Boid[] boids, double force) {
         Vector2D result = new Vector2D();
+        int boids_in_view = 0;
 
+        for (Boid other_boid : boids) {
+            if (other_boid != this && this.vector_to_other(other_boid).length() < view_distance) {
+                boids_in_view++;
+                Vector2D v = new Vector2D();
+                v = this.position.sub(other_boid.position);
+                v = v.div(v.length());
+
+                result = result.add(v);
+            }
+        }
+        if (boids_in_view > 0) {
+            result = result.div(boids_in_view);
+        }
+        result = result.sub(this.velocity);
+        result = result.normalize().mult(force);
+        
         return result;
     }
 
-    Vector2D alignment(Boid[] boids) {
+    Vector2D alignment(Boid[] boids, double force) {
         Vector2D result = new Vector2D();
         int boids_in_view = 0;
+
         for (Boid other_boid : boids) {
             if (other_boid != this && this.vector_to_other(other_boid).length() < view_distance) {
                 boids_in_view++;
@@ -28,12 +46,15 @@ public class Boid {
             result = result.div(boids_in_view);
         }
         result = result.sub(this.velocity);
+        result = result.normalize().mult(force);
+
         return result;
     }
 
-    Vector2D cohesion(Boid[] boids) {
+    Vector2D cohesion(Boid[] boids, double force) {
         Vector2D result = new Vector2D();
         int boids_in_view = 0;
+
         for (Boid other_boid : boids) {
             if (other_boid != this && this.vector_to_other(other_boid).length() < view_distance) {
                 boids_in_view++;
@@ -44,15 +65,19 @@ public class Boid {
             result = result.div(boids_in_view);
         }
         result = result.sub(this.position);
+        result = result.sub(this.velocity);
+        result = result.normalize().mult(force);
+
         return result;
     }
 
     void flock(Boid[] boids){
-        Vector2D seperation = this.seperation(boids);
-        Vector2D alignment = this.alignment(boids);
-        Vector2D cohesion = this.cohesion(boids);
+        this.acceleration = new Vector2D();
+        Vector2D seperation = this.seperation(boids, 0.0);
+        Vector2D alignment = this.alignment(boids, 0.2);
+        Vector2D cohesion = this.cohesion(boids, 0.2);
         
-        this.acceleration = seperation.add(alignment.add(cohesion));
+        this.acceleration = Vector2D.add(seperation, alignment, cohesion);
     }
 
     void update() {

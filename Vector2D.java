@@ -29,6 +29,14 @@ public class Vector2D {
     Vector2D add(Vector2D other) {
         return new Vector2D(this.x + other.x, this.y + other.y);
     }
+    static Vector2D add(Vector2D... vectors) {
+        Vector2D result = new Vector2D();
+        for (Vector2D vector : vectors) {
+            result.x += vector.x;
+            result.y += vector.y;
+        }
+        return result;
+    }
 
     Vector2D sub(Vector2D other) {
         return new Vector2D(this.x - other.x, this.y - other.y);

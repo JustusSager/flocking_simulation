@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.StrokeBorder;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -59,10 +58,7 @@ public class MyPanel extends JPanel implements ActionListener{
         }
 
         for (Boid boid : boids) {
-
-            Vector2D alignment = boid.alignment(boids);
-            
-            boid.acceleration = alignment;
+            boid.flock(boids);
         }
         
         repaint();

@@ -9,33 +9,56 @@ public class Boid {
         this.acceleration = acceleration;
     }
 
-    void seperation(Boid[] boids) {
-        
+    Vector2D seperation(Boid[] boids) {
+        Vector2D result = new Vector2D();
+
+        return result;
     }
 
     Vector2D alignment(Boid[] boids) {
-        Vector2D average = new Vector2D();
+        Vector2D result = new Vector2D();
         int boids_in_view = 0;
         for (Boid other_boid : boids) {
             if (other_boid != this && this.vector_to_other(other_boid).length() < view_distance) {
                 boids_in_view++;
-                average = average.add(other_boid.velocity);
+                result = result.add(other_boid.velocity);
             }
         }
         if (boids_in_view > 0) {
-            average = average.div(boids_in_view);
+            result = result.div(boids_in_view);
         }
-        average = average.sub(this.velocity);
-        return average;
+        result = result.sub(this.velocity);
+        return result;
     }
 
-    void cohesion(Boid[] boids) {
+    Vector2D cohesion(Boid[] boids) {
+        Vector2D result = new Vector2D();
+        int boids_in_view = 0;
+        for (Boid other_boid : boids) {
+            if (other_boid != this && this.vector_to_other(other_boid).length() < view_distance) {
+                boids_in_view++;
+                result = result.add(other_boid.position);
+            }
+        }
+        if (boids_in_view > 0) {
+            result = result.div(boids_in_view);
+        }
+        result = result.sub(this.velocity);
+        return result;
+    }
+
+    void flock(Boid[] boids){
+        Vector2D seperation = this.seperation(boids);
+        Vector2D alignment = this.alignment(boids);
+        Vector2D cohesion = this.cohesion(boids);
         
+        this.acceleration = seperation.add(alignment.add(cohesion));
     }
 
     void update() {
         this.position = this.position.add(this.velocity);
         this.velocity = this.velocity.add(this.acceleration);
+        this.velocity = this.velocity.normalize();
     }
 
     Vector2D vector_to_other(Boid other) {

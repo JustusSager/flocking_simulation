@@ -1,7 +1,6 @@
 public class Boid {
 
     Vector2D position, velocity, acceleration;
-    final int view_distance = 100;
 
     Boid(Vector2D position, Vector2D velocity, Vector2D acceleration) {
         this.position = position;
@@ -9,7 +8,7 @@ public class Boid {
         this.acceleration = acceleration;
     }
 
-    Vector2D seperation(Boid[] boids, double force) {
+    Vector2D seperation(Boid[] boids, double force, int view_distance) {
         Vector2D result = new Vector2D();
         int boids_in_view = 0;
 
@@ -36,7 +35,7 @@ public class Boid {
         return result;
     }
 
-    Vector2D alignment(Boid[] boids, double force) {
+    Vector2D alignment(Boid[] boids, double force, int view_distance) {
         Vector2D result = new Vector2D();
         int boids_in_view = 0;
 
@@ -55,7 +54,7 @@ public class Boid {
         return result;
     }
 
-    Vector2D cohesion(Boid[] boids, double force) {
+    Vector2D cohesion(Boid[] boids, double force, int view_distance) {
         Vector2D result = new Vector2D();
         int boids_in_view = 0;
 
@@ -76,9 +75,9 @@ public class Boid {
     }
 
     void flock(Boid[] boids){
-        Vector2D seperation = this.seperation(boids, 0.5);
-        Vector2D alignment = this.alignment(boids, 0.1);
-        Vector2D cohesion = this.cohesion(boids, 0.2);
+        Vector2D seperation = this.seperation(boids, 0.4, 50);
+        Vector2D alignment = this.alignment(boids, 0.1, 100);
+        Vector2D cohesion = this.cohesion(boids, 0.2, 100);
         
         this.acceleration = Vector2D.add(seperation, alignment, cohesion);
     }

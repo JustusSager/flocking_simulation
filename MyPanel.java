@@ -5,12 +5,12 @@ import java.awt.event.*;
 
 public class MyPanel extends JPanel implements ActionListener{
 
-    final int PANEL_WIDTH = 500;
-    final int PANEL_HEIGHT = 500;
+    final int PANEL_WIDTH = 1000;
+    final int PANEL_HEIGHT = 700;
 
     Timer timer;
     
-    Boid[] boids = new Boid[50];
+    Boid[] boids = new Boid[100];
     
     MyPanel() {
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));

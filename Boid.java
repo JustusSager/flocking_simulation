@@ -43,7 +43,7 @@ public class Boid {
         if (boids_in_view > 0) {
             result = result.div(boids_in_view);
         }
-        result = result.sub(this.velocity);
+        result = result.sub(this.position);
         return result;
     }
 

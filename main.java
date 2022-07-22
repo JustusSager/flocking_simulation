@@ -1,7 +1,18 @@
+import javax.swing.JFrame;
+
 class Main {
     public static void main (String[] args) {
 
-        new MyFrame();
+        JFrame window = new JFrame();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
+        window.setTitle("Flocking Simulation");
+
+        window.add(new MyPanel());
+        window.pack();
+
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
 
         System.out.println("Hello world");
     }

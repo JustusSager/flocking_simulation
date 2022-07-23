@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class QuadTree {
     int x, y, width, height, max_points, points_length;
     boolean devided;

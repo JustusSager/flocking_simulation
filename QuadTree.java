@@ -1,14 +1,14 @@
+import java.util.ArrayList;
+
 public class QuadTree {
-    int x, y, width, height, max_points, points_length;
+    Rectangle boundary;
+    int max_points, points_length;
     boolean devided;
     Point[] points;
     QuadTree north_west, north_east, south_west, south_east;
 
-    QuadTree(int x, int y, int width, int height, int max_points) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    QuadTree(double x, double y, double width, double height, int max_points) {
+        boundary = new Rectangle(x, y, width, height);
         this.max_points = max_points;
         this.devided = false;
         this.points = new Point[max_points];
@@ -16,7 +16,8 @@ public class QuadTree {
     }
 
     void insert(Point point) {
-        if (this.intersects(point) && point != null) {
+        /* Punkt in den QuadTree eingefügen */
+        if (this.boundary.contains(point) && point != null) {
             if (this.points_length < this.max_points) {
                 points[points_length] = point;
                 points_length++;
@@ -33,15 +34,17 @@ public class QuadTree {
         }
     }
     void insert(double x, double y, Object user_data) {
+        /* Koordinaten zu Punkt umwandeln und in den QuadTree eingefügen */
         Point point = new Point(x, y, user_data);
         this.insert(point);
     }
     
     void devide() {
-        this.north_west = new QuadTree(this.x, this.y, this.width / 2, this.height / 2, this.max_points);
-        this.north_east = new QuadTree(this.x + this.width / 2, this.y, this.width / 2, this.height / 2, this.max_points);
-        this.south_west = new QuadTree(this.x, this.y + this.height / 2, this.width / 2, this.height / 2, this.max_points);
-        this.south_east = new QuadTree(this.x + this.width / 2, this.y + this.height, this.width / 2, this.height / 2, this.max_points);
+        /* QuadTree in vier untergeordnete QuadTrees aufteilen und die Punkte passend in sie einfügen */
+        this.north_west = new QuadTree(this.boundary.x, this.boundary.y, this.boundary.width / 2, this.boundary.height / 2, this.max_points);
+        this.north_east = new QuadTree(this.boundary.x + this.boundary.width / 2, this.boundary.y, this.boundary.width / 2, this.boundary.height / 2, this.max_points);
+        this.south_west = new QuadTree(this.boundary.x, this.boundary.y + this.boundary.height / 2, this.boundary.width / 2, this.boundary.height / 2, this.max_points);
+        this.south_east = new QuadTree(this.boundary.x + this.boundary.width / 2, this.boundary.y + this.boundary.height / 2, this.boundary.width / 2, this.boundary.height / 2, this.max_points);
 
         for (int i = 0; i < max_points; i++) {
             if (this.points[i] != null) {
@@ -53,25 +56,33 @@ public class QuadTree {
         }
     }
 
-    boolean intersects(Point point) {
-        return (
-            point.x <= this.x + this.width &&
-            point.x >= this.x &&
-            point.y <= this.y + this.height &&
-            point.y >= this.y
-        );
+    ArrayList<Point> querry(Rectangle rect, ArrayList<Point> result) {
+        /* Liefert alle Punkte innerhalb des angegebenen Rechtecks. */
+        if (!boundary.intersects(rect)) {
+            return result;
+        }else if(devided) {
+            this.north_east.querry(rect, result);
+            this.north_west.querry(rect, result);
+            this.south_east.querry(rect, result);
+            this.south_west.querry(rect, result);
+        } else {
+            for (Point point : points) {
+                if (point != null && rect.contains(point)) {
+                    result.add(point);
+                }
+            }
+        }
+        return result;
     }
-    boolean intersects(int x, int y, int width, int height) {
-        return !(
-            x > this.x + this.width ||
-            x + width < this.x ||
-            y > this.y + this.height ||
-            y + height < this.y
-        );
+    ArrayList<Point> querry(double x, double y, double width, double height) {
+        /* Liefert alle Punkte innerhalb des angegebenen Rechtecks. */
+        ArrayList<Point> result = new ArrayList<Point>();
+        return this.querry(new Rectangle(x, y, width, height), result);
     }
 }
 
 class Point {
+    /* Verwendete Punktklasse */
     double x, y;
     Object user_data;
 
@@ -85,5 +96,37 @@ class Point {
         this.x = x;
         this.y = y;
         this.user_data = user_data;
+    }
+}
+
+class Rectangle {
+    /* Verwendete Recheckklasse */
+    double x, y, width, height;
+
+    Rectangle(double x, double y, double width, double height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    boolean contains(Point point) {
+        /* Kontrolle ob ein Punkt innerhalb des Rechtecks liegt */
+        return (
+            point.x <= this.x + this.width &&
+            point.x >= this.x &&
+            point.y <= this.y + this.height &&
+            point.y >= this.y
+        );
+    }
+
+    boolean intersects(Rectangle rect) {
+        /* Kontrolle sich ein Rechteck mit diesem Rechteck schneidet */
+        return (
+            !(rect.x >= this.x + this.width) &&
+            !(rect.x + rect.width <= this.x) &&
+            !(rect.y >= this.y + this.height) &&
+            !(rect.y + rect.height <= this.y)
+        );
     }
 }

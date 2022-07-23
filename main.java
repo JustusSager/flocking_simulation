@@ -14,13 +14,5 @@ class Main {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         
-
-        QuadTree quadtree = new QuadTree(0, 0, 800, 800, 4);
-
-        for(int i = 0; i < 20; i++) {
-            quadtree.insert(Math.random() * 800, Math.random() * 800, null);
-        }
-
-        System.out.println("End");
     }
 }
